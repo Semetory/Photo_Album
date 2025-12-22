@@ -3,6 +3,8 @@ module com.example.iterator {
     requires javafx.fxml;
     requires javafx.graphics;
     requires javafx.base;
+    requires com.fasterxml.jackson.annotation;
+    requires com.fasterxml.jackson.databind;
 
     opens com.example.iterator to javafx.fxml;
     exports com.example.iterator;

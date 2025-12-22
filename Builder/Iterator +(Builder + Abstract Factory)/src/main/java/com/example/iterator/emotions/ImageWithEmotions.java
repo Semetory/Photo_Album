@@ -1,13 +1,10 @@
 package com.example.iterator.emotions;
 
-import com.example.iterator.emotions.Emotion;
 import java.io.File;
 import java.util.*;
 
-import com.example.iterator.emotions.Emotion;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -35,7 +32,6 @@ public class ImageWithEmotions {
         }
     }
 
-    // Getters
     @JsonIgnore
     public File getImageFile() { return imageFile; }
 
@@ -67,7 +63,7 @@ public class ImageWithEmotions {
         Builder builder = new Builder(this.imageFile)
                 .withCustomHash(this.imageHash)
                 .withEmotions(this.emotions)
-                .withMetadata(this.metadata);
+                .withMetadata(this.metadata); //!//
         builder.withEmotion(emotion);
         return builder.build();
     }
@@ -75,7 +71,7 @@ public class ImageWithEmotions {
     public ImageWithEmotions removeEmotion(String emotionId) {
         Builder builder = new Builder(this.imageFile)
                 .withCustomHash(this.imageHash)
-                .withMetadata(this.metadata);
+                .withMetadata(this.metadata); //!//
         for (Emotion emotion : this.emotions) {
             if (!emotion.getId().equals(emotionId)) {
                 builder.withEmotion(emotion);
@@ -100,7 +96,7 @@ public class ImageWithEmotions {
         return result;
     }
 
-    // Builder
+    //Builder
     public static class Builder {
         private final File imageFile;
         private String imageHash;
@@ -144,16 +140,45 @@ public class ImageWithEmotions {
             return this;
         }
 
-        public ImageWithEmotions build() {
-            if (!imageFile.exists()) {
-                throw new IllegalStateException("Image file does not exist: " + imageFile.getPath());
-            }
 
-            if (!metadata.containsKey("fileSize")) {
-                metadata.put("fileSize", imageFile.length());
-            }
+public ImageWithEmotions build() {
+    //валидация
+    if (!imageFile.exists()) {
+        throw new IllegalStateException("Image file does not exist: " + imageFile.getPath());
+    }
 
-            return new ImageWithEmotions(this);
+    if (!imageFile.canRead()) {
+        throw new IllegalStateException("Cannot read image file: " + imageFile.getPath());
+    }
+
+    //Проверка расширения файла
+    String name = imageFile.getName().toLowerCase();
+    if (!name.endsWith(".png") && !name.endsWith(".jpg") &&
+            !name.endsWith(".jpeg") && !name.endsWith(".gif") &&
+            !name.endsWith(".bmp")) {
+        throw new IllegalArgumentException("Unsupported image format: " + imageFile.getName());
+    }
+
+    //Проверка размера файла
+    if (imageFile.length() == 0) {
+        throw new IllegalStateException("Image file is empty: " + imageFile.getPath());
+    }
+
+    //Автоматически добавляем информацию о файле
+    if (!metadata.containsKey("fileSize")) {
+        metadata.put("fileSize", imageFile.length());
+    }
+
+    if (!metadata.containsKey("lastModified")) {
+        metadata.put("lastModified", imageFile.lastModified());
+    }
+
+    return new ImageWithEmotions(this);
+}
+
+        public Builder withMetadata(Map<String, Object> metadata) {
+            if (metadata != null) { this.metadata.putAll(metadata); }
+            return this;
         }
 
         private String calculateFileHash(File file) {

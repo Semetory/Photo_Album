@@ -1,17 +1,9 @@
 package com.example.iterator.emotions;
 
-import com.example.iterator.emotions.Emotion;
 import com.example.iterator.model.ImageWithEmotions;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.*;
 import java.util.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import com.example.iterator.emotions.Emotion;
-import com.example.iterator.model.ImageWithEmotions;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.util.*;
 
@@ -20,7 +12,7 @@ public class EmotionManager {
     private static EmotionManager instance;
     private final ObjectMapper objectMapper;
 
-    // Храним эмоции по хэшу изображения
+    //эмоции по хэшу изображения
     private final Map<String, List<Emotion>> emotionsByImageHash = new HashMap<>();
 
     private EmotionManager() {
@@ -37,7 +29,7 @@ public class EmotionManager {
     }
 
     public void saveEmotion(File imageFile, Emotion emotion) {
-        // Создаем временный ImageWithEmotions для расчета хэша
+        //ImageWithEmotions для расчета хэша
         ImageWithEmotions tempImage = new ImageWithEmotions.Builder(imageFile).build();
         String imageHash = tempImage.getImageHash();
 
@@ -57,15 +49,15 @@ public class EmotionManager {
             return new ArrayList<>(emotions);
         }
 
-        // Попробуем найти по имени файла
+        //Попробуем найти по имени файла
         for (Map.Entry<String, List<Emotion>> entry : emotionsByImageHash.entrySet()) {
             for (Emotion emotion : entry.getValue()) {
-                // Если в эмоции сохранен путь к файлу
+                //Если в эмоции сохранен путь к файлу
                 if (emotion instanceof com.example.iterator.emotions.SmileyEmotion) {
-                    // Проверка по имени файла
-                    String storedFileName = ((com.example.iterator.emotions.SmileyEmotion) emotion)
-                            .getMetadata().get("fileName");
-                    if (storedFileName != null && storedFileName.equals(imageFile.getName())) {
+                    //Проверка по имени файла
+                    String storedFileName = ((SmileyEmotion) emotion)
+                            .getMetadata().get("fileName").toString(); //!// /**/
+                   if (storedFileName != null && storedFileName.equals(imageFile.getName())) {
                         return new ArrayList<>(entry.getValue());
                     }
                 }
@@ -93,7 +85,6 @@ public class EmotionManager {
             if (file.exists()) {
                 Map<String, Object> data = objectMapper.readValue(file, Map.class);
 
-                // Десериализация эмоций
                 Map<String, List<Map<String, Object>>> savedEmotions =
                         (Map<String, List<Map<String, Object>>>) data.get("emotions");
 
@@ -101,8 +92,6 @@ public class EmotionManager {
                     for (Map.Entry<String, List<Map<String, Object>>> entry : savedEmotions.entrySet()) {
                         List<Emotion> emotions = new ArrayList<>();
                         for (Map<String, Object> emotionData : entry.getValue()) {
-                            // Простая десериализация - в реальном приложении нужно использовать
-                            // ObjectMapper с правильными настройками
                             emotions.add(createEmotionFromMap(emotionData));
                         }
                         emotionsByImageHash.put(entry.getKey(), emotions);
@@ -115,8 +104,7 @@ public class EmotionManager {
     }
 
     private Emotion createEmotionFromMap(Map<String, Object> data) {
-        // Упрощенная десериализация
-        // В реальном приложении используйте ObjectMapper с аннотациями @JsonSubTypes
+
         String type = (String) data.get("type");
 
         if ("smiley".equals(type)) {
@@ -139,7 +127,6 @@ public class EmotionManager {
             saveData.put("version", "1.0");
             saveData.put("savedAt", new Date().toString());
 
-            // Конвертируем эмоции в формат для сериализации
             Map<String, List<Map<String, Object>>> serializableEmotions = new HashMap<>();
             for (Map.Entry<String, List<Emotion>> entry : emotionsByImageHash.entrySet()) {
                 List<Map<String, Object>> emotionList = new ArrayList<>();

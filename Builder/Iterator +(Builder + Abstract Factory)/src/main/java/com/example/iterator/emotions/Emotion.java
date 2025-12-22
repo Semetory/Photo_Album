@@ -6,9 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(
-        use = JsonTypeInfo.Id.NAME,
-        include = JsonTypeInfo.As.PROPERTY,
-        property = "type"
+        use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type"
 )
 @JsonSubTypes({
         @JsonSubTypes.Type(value = SmileyEmotion.class, name = "smiley"),
@@ -33,7 +31,6 @@ public abstract class Emotion {
     public abstract String getType();
     public abstract String getDisplayText();
 
-    // Getters and Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     public String getUserId() { return userId; }

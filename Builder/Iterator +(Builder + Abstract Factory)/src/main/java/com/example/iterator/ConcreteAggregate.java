@@ -8,7 +8,7 @@ import com.example.iterator.model.Aggregate;
 import java.io.File;
 import java.util.*;
 
-public class ConcreteAggregate implements Aggregate {
+public class ConcreteAggregate implements Aggregate  {
     private List<ImageWithEmotions> images = new ArrayList<>();
     private EmotionManager emotionManager;
 
@@ -25,7 +25,7 @@ public class ConcreteAggregate implements Aggregate {
                     if (file.isDirectory()) {
                         loadImages(file, filter);
                     } else if (matchesFilter(file.getName(), filter)) {
-                        // Используем Builder для создания ImageWithEmotions
+                        //Builder для создания ImageWithEmotions
                         ImageWithEmotions image = new ImageWithEmotions.Builder(file)
                                 .withEmotions(emotionManager.getEmotions(file))
                                 .withMetadata("loadedAt", new Date())
@@ -51,15 +51,15 @@ public class ConcreteAggregate implements Aggregate {
     }
 
     @Override
-    public Iterator getIterator() {
+    public com.example.iterator.model.Iterator getIterator() { //!//
         return new EnhancedImageIterator();
     }
 
     public void addEmotionToCurrentImage(Emotion emotion) {
-        // Логика добавления эмоции к текущему изображению
+        //добавления эмоции к текущему изображению
     }
 
-    private class EnhancedImageIterator implements Iterator {
+    private class EnhancedImageIterator implements com.example.iterator.model.Iterator{
         private int current = -1;
 
         @Override
@@ -68,7 +68,7 @@ public class ConcreteAggregate implements Aggregate {
         }
 
         @Override
-        public Object next() {
+        public Object next() { //!//
             if (images.isEmpty()) return null;
 
             if (hasNext()) {
@@ -80,7 +80,6 @@ public class ConcreteAggregate implements Aggregate {
             return images.get(current);
         }
 
-        @Override
         public Object preview() {
             if (images.isEmpty()) return null;
 

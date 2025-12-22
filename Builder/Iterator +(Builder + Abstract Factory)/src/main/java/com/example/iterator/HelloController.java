@@ -1,32 +1,22 @@
 package com.example.iterator;
 
-import com.example.iterator.model.Iterator;
+import com.example.iterator.model.ImageWithEmotions;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Duration;
-
 import java.io.File;
-
 import com.example.iterator.emotions.*;
 import com.example.iterator.emotions.factory.EmotionFactory;
-import com.example.iterator.manager.EmotionManager;
+import com.example.iterator.emotions.EmotionManager;
 import com.example.iterator.model.*;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.util.Duration;
-import java.io.File;
 
 public class HelloController {
     @FXML private ImageView imageView;
@@ -49,7 +39,7 @@ public class HelloController {
         emotionFactory = EmotionFactory.getFactory("advanced");
         emotionManager = EmotionManager.getInstance();
 
-        // Обработчик кликов для добавления эмоций
+        //обработчик кликов для добавления эмоций
         imageView.setOnMouseClicked(event -> {
             if (iterator != null) {
                 showEmotionMenu(event.getX(), event.getY());
@@ -66,7 +56,7 @@ public class HelloController {
         if (directory != null && directory.exists()) {
             String filter = formatCombo.getValue();
             slides = new EnhancedImageAggregate(directory.getAbsolutePath(), filter);
-            ((EnhancedImageAggregate) slides).loadImages(); // Загружаем изображения
+            ((EnhancedImageAggregate) slides).loadImages(); //Загружаем изображения
 
             if (slides.size() > 0) {
                 iterator = slides.getIterator();
@@ -126,20 +116,17 @@ public class HelloController {
 
     private void loadImageWithEmotions(ImageWithEmotions image) {
         if (image != null) {
-            // Загружаем изображение
+
             javafx.scene.image.Image fxImage = new javafx.scene.image.Image(
                     image.getImageFile().toURI().toString());
             imageView.setImage(fxImage);
 
-            // Очищаем старые эмоции
             emotionPane.getChildren().clear();
 
-            // Отображаем эмоции
             for (Emotion emotion : image.getEmotions()) {
                 displayEmotion(emotion);
             }
 
-            // Обновляем статус
             statusLabel.setText(image.getFileName() + " - " + iterator.getProgress() +
                     " (эмоций: " + image.getEmotions().size() + ")");
         }
@@ -203,13 +190,8 @@ public class HelloController {
                     "user1", type, params[0], normX, normY
             );
 
-            // Сохраняем через EmotionManager
             emotionManager.saveEmotion(iterator.getCurrentFile(), emotion);
-
-            // Добавляем к текущему изображению
             iterator.addEmotionToCurrent(emotion);
-
-            // Отображаем
             displayEmotion(emotion);
 
             statusLabel.setText("Эмоция добавлена!");

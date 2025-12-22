@@ -4,11 +4,7 @@ import com.example.iterator.emotions.Emotion;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.*;
-
-import com.example.iterator.emotions.Emotion;
 import javafx.scene.image.Image;
-import java.io.File;
-import java.io.FilenameFilter;
 import java.util.*;
 
 public class EnhancedImageAggregate implements ImageAggregate {
@@ -85,7 +81,7 @@ public class EnhancedImageAggregate implements ImageAggregate {
         return false;
     }
 
-    // Реализация ImageAggregate интерфейса
+    //ImageAggregate интерфейс
 
     @Override
     public ImageIterator getIterator() {
@@ -267,7 +263,7 @@ public class EnhancedImageAggregate implements ImageAggregate {
         return result;
     }
 
-    // Внутренний класс итератора
+    //внутренний класс итератора
     private class EnhancedImageIterator implements ImageIterator {
         private int currentIndex = -1;
         private int lastAccessed = -1;
@@ -304,7 +300,30 @@ public class EnhancedImageAggregate implements ImageAggregate {
             return images.get(currentIndex);
         }
 
-        @Override
+        public ImageWithEmotions nextImage() {
+            if (!hasNext()) {
+                currentIndex = 0;
+            } else {
+                currentIndex++;
+            }
+            lastAccessed = currentIndex;
+            return images.get(currentIndex);
+        }
+
+        public ImageWithEmotions previewImage() {
+            if (images.isEmpty()) {
+                return null;
+            }
+            if (currentIndex > 0) {
+                currentIndex--;
+            } else {
+                currentIndex = images.size() - 1;
+            }
+            lastAccessed = currentIndex;
+            return images.get(currentIndex);
+        }
+
+      @Override
         public ImageWithEmotions current() {
             if (lastAccessed >= 0 && lastAccessed < images.size()) {
                 return images.get(lastAccessed);
@@ -404,17 +423,6 @@ public class EnhancedImageAggregate implements ImageAggregate {
         public void reset() {
             currentIndex = -1;
             lastAccessed = -1;
-        }
-
-        // Реализация базовых методов интерфейса Iterator (возвращающих Object)
-        @Override
-        public Object next() {
-            return next(); // вызовет перегруженный метод
-        }
-
-        @Override
-        public Object preview() {
-            return preview(); // вызовет перегруженный метод
         }
     }
 }
