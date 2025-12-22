@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.builder.HelloController"
+            prefHeight="600" prefWidth="800">
+
+    <top>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label text="Индикатор процессов" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+            <Separator/>
+        </VBox>
+    </top>
+
+    <left>
+        <VBox spacing="10" prefWidth="250">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label text="Параметры индикатора"/>
+
+            <Label text="Тип индикатора:"/>
+            <ComboBox fx:id="indicatorType" prefWidth="200"/>
+
+            <Label text="Начальное значение:"/>
+            <TextField fx:id="startValue" text="0"/>
+
+            <Label text="Конечное значение:"/>
+            <TextField fx:id="endValue" text="100"/>
+
+            <Label text="Текущее значение:"/>
+            <TextField fx:id="currentValue" text="50"/>
+
+            <Label text="Заголовок:"/>
+            <TextField fx:id="title" text="Прогресс выполнения"/>
+
+            <CheckBox fx:id="showScale" text="Показать шкалу" selected="true"/>
+            <CheckBox fx:id="showMarkers" text="Показать метки" selected="true"/>
+
+            <Button text="Создать индикатор" onAction="#createIndicator" prefWidth="200"/>
+            <Button text="Очистить" onAction="#clearIndicators" prefWidth="200"/>
+        </VBox>
+    </left>
+
+    <center>
+        <ScrollPane>
+            <VBox fx:id="indicatorContainer" spacing="20">
+                <padding>
+                    <Insets top="10" right="10" bottom="10" left="10"/>
+                </padding>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>
+
+
